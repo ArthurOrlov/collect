@@ -1,0 +1,30 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+body {
+  background: #f5f6fa;
+  color: #1a1a1a;
+}
+
+.header {
+  padding: 16px 32px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.logo {
+  font-size: 20px;
+  font-weight: 700;
+  text-decoration: none;
+  color: #2c3e50;
+}
+
+.main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px;
+}
