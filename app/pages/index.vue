@@ -2,9 +2,19 @@
   <div>
     <div class="page-header">
       <h1>Мои коллекции</h1>
-      <button class="btn-primary" @click="showForm = true">
-        + Добавить коллекцию
-      </button>
+      
+      <div v-if="user">
+        <button class="btn-primary" @click="showForm = true">
+          + Добавить коллекцию
+        </button>
+        <button class="btn-secondary" @click="logout">
+          Выйти
+        </button>
+      </div>
+      
+      <NuxtLink v-else to="/login" class="btn-primary">
+        Войти, чтобы добавить
+      </NuxtLink>
     </div>
 
     <div v-if="collections.length === 0" class="empty">
@@ -30,14 +40,23 @@
 <script setup lang="ts">
 import type { Collection } from '~/composables/useCollections'
 
-const { collections, addCollection, loadFromStorage } = useCollections()
+const { collections, addCollection, fetchCollections } = useCollections()
+const user = useSupabaseUser()
+const supabase = useSupabaseClient()
 const showForm = ref(false)
 
-onMounted(() => loadFromStorage())
+onMounted(() => {
+  fetchCollections()
+})
 
-const onSave = (data: { title: string; description: string; image: string | null }) => {
-  addCollection(data)
+const onSave = async (data: { title: string; description: string; imageFile: File | null }) => {
+  await addCollection(data)
   showForm.value = false
+}
+
+const logout = async () => {
+  await supabase.auth.signOut()
+  navigateTo('/login')
 }
 </script>
 
@@ -59,8 +78,23 @@ const onSave = (data: { title: string; description: string; image: string | null
   font-size: 14px;
   font-weight: 600;
   transition: background .15s;
+  text-decoration: none;
+  display: inline-block;
 }
 .btn-primary:hover { background: #4338ca; }
+
+.btn-secondary {
+  background: #eee;
+  color: #333;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  margin-left: 10px;
+}
+.btn-secondary:hover { background: #e0e0e0; }
 
 .grid {
   display: grid;

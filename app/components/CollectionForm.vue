@@ -47,30 +47,34 @@
 <script setup lang="ts">
 const emit = defineEmits<{
   close: []
-  save: [data: { title: string; description: string; image: string | null }]
+  save: [data: { title: string; description: string; imageFile: File | null }]
 }>()
 
 const title = ref('')
 const description = ref('')
-const image = ref<string | null>(null)
-const imagePreview = computed(() => image.value)
+const imageFile = ref<File | null>(null)
+const imagePreview = ref<string | null>(null)
 
 const onFile = (e: Event) => {
   const file = (e.target as HTMLInputElement).files?.[0]
   if (!file) return
+  imageFile.value = file
   const reader = new FileReader()
-  reader.onload = () => { image.value = reader.result as string }
+  reader.onload = () => { imagePreview.value = reader.result as string }
   reader.readAsDataURL(file)
 }
 
-const removeImage = () => { image.value = null }
+const removeImage = () => { 
+  imageFile.value = null
+  imagePreview.value = null
+}
 
 const onSubmit = () => {
   if (!title.value.trim()) return
   emit('save', {
     title: title.value.trim(),
     description: description.value.trim(),
-    image: image.value,
+    imageFile: imageFile.value,
   })
 }
 </script>
